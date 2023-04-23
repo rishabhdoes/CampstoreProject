@@ -14,7 +14,9 @@ router.post('/register',catchasync(registeruser))
 
 router.get('/login',renderloginform)
 
-router.post('/login',passport.authenticate('local',{failureFlash:true ,failureRedirect:'/login'}) ,loginuser)
+router.post('/login',passport.authenticate('local',{failureFlash:true ,failureRedirect:'/login'}) ,loginuser,(req,res)=>{
+   req.session.returnto='/campgrounds';
+})
 
 router.get('/logout',logoutuser)
 

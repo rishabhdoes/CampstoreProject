@@ -1,6 +1,7 @@
 const campground = require("../models/campground");
 const {cloudinary}=require('../cloudinary')
-
+const axios=require('axios')
+const token=process.env.mapboxtoken
 module.exports.index = async (req, res) => {
   const campgrounds = await campground.find({});
 
@@ -9,17 +10,23 @@ module.exports.index = async (req, res) => {
 
 module.exports.newcamp = async (req, res) => {
   //if(!req.campground) throw new expresserror('invalid campground data',400);
+  
+const newcampground = new campground(req.body.campground);
+const data=await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${newcampground.location}.json?limit=1&types=place%2Cpostcode%2Caddress&access_token=${token}`);
+newcampground.geometry=data.data.features[0].geometry;
 
-  const newcampground = new campground(req.body.campground);
-  //console.log(req.files)
+  
   newcampground.images = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
   }));
+
+  
   newcampground.author = req.user._id;
 
   await newcampground.save();
 
+  
   req.flash("success", "Succesfully made a new Camground");
 
   res.redirect(`/campgrounds/${newcampground._id}`);

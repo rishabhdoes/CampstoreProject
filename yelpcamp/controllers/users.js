@@ -30,12 +30,14 @@ module.exports.registeruser=async(req,res,next)=>{
     
 }
 module.exports.loginuser=(req,res)=>{
-   
+ 
     req.flash('success','Welcome back');
-    
-    const redirect_to=(req.session.returnto || '/campgrounds')
-
+    const return_to=req.session.returnto;
     delete req.session.returnto;
+   // console.log(req.session.returnto)
+    const redirect_to=( return_to || '/campgrounds')
+    delete req.session.returnto;
+    
 
 
 res.redirect(redirect_to);
@@ -46,7 +48,7 @@ res.redirect(redirect_to);
 module.exports.logoutuser=(req,res)=>{
     req.logout();
     req.flash('success','bye bye');
-    res.redirect('/campgrounds');
+    res.redirect('/');
 }
 
 module.exports.renderloginform=(req,res)=>{

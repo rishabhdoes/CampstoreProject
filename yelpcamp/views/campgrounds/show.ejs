@@ -8,7 +8,8 @@
 <div class="row">
     <div class="col-6">
       
-
+     
+     
 
       
 
@@ -38,6 +39,7 @@
     <span class="visually-hidden">Next</span>
   </button>
   <%}%>
+  
 </div>
 
 
@@ -51,8 +53,7 @@
           </p>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item text-muted"><%= campground.location %></li>
-          <li class="list-group-item  "> Author: <%= campground.author.username %></li>
+          <li class="list-group-item text-muted"><%= campground.location%></li>
           <li class="list-group-item  text-muted"> $<%= campground.price %>/night</li>
           <% currentuser %> 
         </ul>
@@ -79,7 +80,7 @@
     </div>
 
     <div class="col-6">
-
+      <div id='map' style='width: 640px; height: 300px;'></div>
         <% if(currentuser){ %>       
       <h1> Leave a Review</h1>
       <form action="/campgrounds/<%=campground._id%>/reviews" class="mb-3 needs-validation"  method="POST"  novalidate>
@@ -146,5 +147,41 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  
+mapboxgl.accessToken = '<%=process.env.mapboxtoken%>';
+const loc='<%=campground.geometry.coordinates%>'
+op=loc.split(',');
+
+
+const map = new mapboxgl.Map({
+container: 'map', // container ID
+style: 'mapbox://styles/mapbox/satellite-v9', // style URL
+center: op, // starting position [lng, lat]
+zoom: 15 // starting zoom
+});
+
+map.addControl(new mapboxgl.NavigationControl());
+const marker=new mapboxgl.Marker()
+    .setLngLat(op)
+    
+    .addTo(map)
+const popup = new mapboxgl.Popup({ offset: 25 })
+  .setLngLat(op)
+  .setHTML('<h3>  <%=campground.location%> </h3>')
+  .addTo(map);
+</script>
+
+
+
+
 
  
